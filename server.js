@@ -23,7 +23,7 @@ app.get("/getUsers", (req, res) => {
 app.post("/saveUser", jsonParser, (req, res) => {
   const data = req.body;
 
-  USERS.push(data.userId);
+  USERS.push(data);
 
   res.json({
     users: USERS,
