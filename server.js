@@ -8,7 +8,7 @@ const jsonParser = bodyPerser.json();
 const app = express();
 app.use(cors());
 
-const USERS = [];
+const USERS = {};
 
 app.get("/", (req, res) => {
   res.status(200).send("ok");
@@ -23,7 +23,7 @@ app.get("/getUsers", (req, res) => {
 app.post("/saveUser", jsonParser, (req, res) => {
   const data = req.body;
 
-  USERS.push(data);
+  USERS[data.userId] = data;
 
   res.json({
     users: USERS,
@@ -44,9 +44,9 @@ peerServer.on("connection", (client) => {
 
 peerServer.on("disconnect", (client) => {
   console.log(client.getId(), " disconnected");
-  USERS.forEach((user, index) => {
-    if (user === client.getId()) {
-      USERS.splice(index, 1);
+  for (const [key, value] of Object.entries(USERS)) {
+    if (key === client.getId()) {
+      delete USERS[key];
     }
-  });
+  }
 });
