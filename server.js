@@ -1,6 +1,6 @@
 const express = require("express");
-const { ExpressPeerServer } = require("peer");
 const cors = require("cors");
+const { ExpressPeerServer } = require("peer");
 
 const bodyPerser = require("body-parser");
 const jsonParser = bodyPerser.json();
@@ -40,16 +40,14 @@ const peerServer = ExpressPeerServer(server, {
 
 app.use("/peerjs", peerServer);
 
-peerServer.on("connection", (client) => {
-  console.log(client.getId(), " connected");
-});
+peerServer.on("connection", (client) => {});
 
 peerServer.on("disconnect", (client) => {
-  console.log(client.getId(), " disconnected");
   Object.entries(USERS).forEach(([key, value]) => {
-    if (key === client.getId()) {
-      delete BLOGS[value][key];
-      delete USERS[key];
-    }
+    if (key !== client.getId()) return;
+    delete BLOGS[value][key];
+    delete USERS[key];
+    if (Object.keys(BLOGS[value]).length) return;
+    delete BLOGS[value];
   });
 });
