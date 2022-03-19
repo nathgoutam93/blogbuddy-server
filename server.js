@@ -12,7 +12,7 @@ const BLOGS = {};
 const USERS = {};
 
 app.get("/", (req, res) => {
-  res.status(200).send("ok");
+  res.status(200).send("Server is Listening");
 });
 
 app.get("/getUsers", (req, res) => {
@@ -32,7 +32,9 @@ app.post("/saveUser", jsonParser, (req, res) => {
   });
 });
 
-const server = app.listen(5000);
+const server = app.listen(process.env.PORT || 5000, () =>
+  console.log(`server started listening`)
+);
 
 const peerServer = ExpressPeerServer(server, {
   path: "/",
